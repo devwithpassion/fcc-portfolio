@@ -1,17 +1,4 @@
-.color1 {
-  background-color: rgba(0, 68, 255, 0.3);
-  /* background-color: #0046FF; */
-}
-.color2 {
-  background-color: #73C8D2;
-}
-.color3 {
-  background-color: #F5F1DC;
-}
-.color4 {
-  background-color: #FF9013;
-}
-
+/* still confuse how to set clamp() function correctly */
 
 /* || RESET */
 * {
@@ -31,14 +18,23 @@ img {
 :root {
   /* COLOR */
   --COLOR: #F5F1DC;
-  --BGCOLOR: #121212;
+  --BGCOLOR: #101010;
+  --BGCOLOR-FADE: #1F1F1F;
+  --BGIMAGE: linear-gradient(to bottom, var(--BGCOLOR-FADE), var(--BGCOLOR));
+  --BODY-BGCOLOR: #222222;
+  --WELCOME-BGCOLOR: rgb(255, 255, 255, 0.05);
   --LINK-COLOR: #73C8D2;
   --BUTTON-BGCOLOR: #FF9013;
-  --CARD-BGCOLOR: rgba(255, 145, 19, 0.08); /* #1F1B24 worth to try */
-  --BORDER-COLOR: rgba(255, 255, 255, 0.1)
+  --CARD-BGCOLOR: #1F1B24; /* #1F1B24 worth to try */
+  --BORDER-COLOR: rgba(255, 255, 255, 0.1);
+  --BORDER: 2px solid var(--BORDER-COLOR);
+  --HEADER-BGIMAGE: linear-gradient(var(--BODY-BGCOLOR) 45%, rgba(0, 0, 0, 0) 90%);
+
 
   /* FONT */
-  --FF ""
+  --FF: "Noto Sans", Arial, sans-serif;
+  --FF-HEADINGS: "Ubuntu", "Noto Sans", Arial, sans-serif;
+  --FS: clamp(1rem, 2.2vh, 1.5rem);
 }
 
 
@@ -46,24 +42,280 @@ img {
 
 html {
   background-color: var(--BGCOLOR);
-  color: var(--COLOR)
+  background-image: var(--BGIMAGE);
+  color: var(--COLOR);
+  font-family: var(--FF);
+  font-size: var(--FS);
 }
+
 body {
-
+  background-color: var(--BODY-BGCOLOR);
+  width: clamp(320px, 95vw, 1200px);
+  min-height: 100vh; /* fallback for dvh unit */
+  min-height: 100dvh;
+  border-left: var(--BORDER);
+  border-right: var(--BORDER);
+  margin: 0 auto;
 
 }
 
+h1,
+h2 {
+  font-family: var(--FF-HEADINGS);
+  margin-bottom: 0.5em;
+}
+a {
+  color: var(--LINK-COLOR);
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
+}
 
 
 /* || HEADER */
 
+.header {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  height: clamp(60px, 10vw, 80px);
+  z-index: 2;
+  margin-bottom: 5px;
+  background-image: var(--HEADER-BGIMAGE);
+  /* border-bottom: var(--BORDER); */
+
+}
+
+.header__nav {
+  max-width: 95%;
+  /* border-bottom: var(--BORDER); */
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+.header__ul {
+  display: flex;
+  justify-content: center;
+  gap: clamp(10px, 4vw, 24px);
+  list-style-type: none;
+}
 
 
+.header__ul a {
+  display: inline-flex; /* to make the text inside <a> centered vertically using align-items */
+  height: 44px;
+  padding: 10px;
+  align-items: center;
+  font-weight: 600;
+  /* background-color: white; */
+}
 
+.header__ul a:hover {
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
 
+/* || WELCOME */
 
+.welcome-section {
+  background-color: var(--WELCOME-BGCOLOR);
+  /* outline: 1px solid darkblue; */
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+}
 
+.welcome-section__h1::before {
+  content: "👋";
+  margin-left: 1ch;
+  display: inline-block;
+  margin-bottom: -2px;
+  opacity: 0;
+}
 
+.welcome-section__h1::after {
+  content: "👋";
+  margin-left: 1ch;
+  display: inline-block;
+  margin-bottom: -2px;
+  transform-origin: 70% 70%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
 
+.welcome-section__h1:hover::after {
+  opacity: 1;
+  animation: wave 1s ease-in-out 2;
+}
 
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(15deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
 
+.welcome-section__h1 {
+  margin-bottom: 10px;
+  font-size: 2rem; /* fallback */
+  font-size: clamp(2rem, 1vw + 1rem, 2.55rem);
+}
+
+.welcome-section__p {
+  font-size: 1rem; /* fallback */
+  font-size: clamp(1rem, 1vw + 0.5rem, 1.15rem);
+}
+
+/* || PROJECT */
+
+.project-section {
+  padding: 2em 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.project-section__h2 {
+  text-align: center;
+}
+
+.project-tile-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  /* outline: 1px solid yellow; */
+}
+
+.project-tile {
+  /* padding: 0.5em; */
+  transition: all 0.3s;
+  /* outline: 1px solid red; */
+}
+
+.project-tile:hover {
+  transform: translateY(-5px);
+}
+
+.project-tile figure {
+  position: relative;
+  top: 0;
+  height: 100%;
+  width: auto;
+  /* outline: 1px solid white; */
+  margin: 0; /* to make fill the container */
+}
+
+.project-tile__img {
+  object-fit: cover;
+  height: 100%;
+  width: auto;
+  border-radius: 10px;
+}
+
+.project-tile__figcaption {
+  position: absolute;
+  bottom: 0;
+  height: clamp(2em, 1vw, 2em);
+  /* outline: 1px solid blue; */
+  z-index: 1;
+  width: 100%;
+  height: max(4vw, 1.5em);
+  background-color: var(--CARD-BGCOLOR);
+  color: var(--COLOR);
+  text-align: center;
+  line-height: max(4vw, 1.5em);
+  font-size: clamp(0.8rem, 0.05vw, 1rem)
+}
+
+.button__show-all-projects {
+  display: block;
+  border: 2px solid rgba(245, 241, 220, 0.75);
+  width: clamp(12em, 80vw, 20em);
+  height: 3em;
+  line-height: 3em;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 10px;
+  background-color: var(--BUTTON-BGCOLOR);
+  color: var(--BGCOLOR);
+  text-shadow: 0 0 5px var(--COLOR);
+  transition: all 0.3s;
+}
+
+.button__show-all-projects:hover {
+  color: var(--COLOR);
+  text-shadow: 0 0 5px var(--BGCOLOR);
+  background-color: rgb(255, 255, 255, 0.1);
+}
+
+.contact {
+  min-height: calc(50vh + 100px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+  background-color: var(--WELCOME-BGCOLOR);
+  text-align: center;
+  padding: 1em;
+}
+
+/* .contact * {
+  outline: 1px solid white;
+} */
+.social-media {
+  display: inline-flex;
+  justify-content: center;
+  line-height: 2em;
+  gap: 0.7em;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  /* width: 100%;
+  box-sizing: border-box; */
+}
+.social-media a {
+  padding: 0.2em 0.75em;
+}
+.social-media a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+/* || FOOTER */
+
+.footer {
+  padding: 1em;
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.footer p {
+  margin: 0 auto;
+}
+.with-love i {
+  color: var(--BUTTON-BGCOLOR);
+}
